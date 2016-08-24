@@ -8,7 +8,7 @@ If you define any helper functions make sure they do not rely on globally define
 Reminder:
 Reference 1D sense and move functions developed during the lesson:
 
-
+```python
 def sense(p, Z):
     q = []
     for i in range(len(p)):
@@ -28,3 +28,4 @@ def move(p, U):
         s = s + pUndershoot * p[(i - U + 1) % len(p)]
         q.append(s)
     return q
+```
