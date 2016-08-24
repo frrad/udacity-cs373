@@ -4,6 +4,11 @@ import localization
 
 class TestLocalization(unittest.TestCase):
 
+    def assertMatricesAlmostEqual(self, test, answer):
+        for t_line, a_line in zip(test, answer):
+            for t_value, a_value in zip(t_line, a_line):
+                self.assertAlmostEqual(t_value, a_value)
+
     def test_one(self):
         colors = [['G', 'G', 'G'],
                   ['G', 'R', 'G'],
@@ -19,11 +24,9 @@ class TestLocalization(unittest.TestCase):
             [[0.0, 0.0, 0.0],
              [0.0, 1.0, 0.0],
              [0.0, 0.0, 0.0]])
-        self.assertEqual(p, correct_answer)
+        self.assertMatricesAlmostEqual(p, correct_answer)
 
-    def test_one(self):
-
-        # test 2
+    def test_two(self):
         colors = [['G', 'G', 'G'],
                   ['G', 'R', 'R'],
                   ['G', 'G', 'G']]
@@ -37,8 +40,9 @@ class TestLocalization(unittest.TestCase):
             [[0.0, 0.0, 0.0],
              [0.0, 0.5, 0.5],
              [0.0, 0.0, 0.0]])
+        self.assertMatricesAlmostEqual(p, correct_answer)
 
-        # test 3
+    def test_three(self):
         colors = [['G', 'G', 'G'],
                   ['G', 'R', 'R'],
                   ['G', 'G', 'G']]
@@ -52,8 +56,9 @@ class TestLocalization(unittest.TestCase):
             [[0.06666666666, 0.06666666666, 0.06666666666],
              [0.06666666666, 0.26666666666, 0.26666666666],
              [0.06666666666, 0.06666666666, 0.06666666666]])
+        self.assertMatricesAlmostEqual(p, correct_answer)
 
-        # test 4
+    def test_four(self):
         colors = [['G', 'G', 'G'],
                   ['G', 'R', 'R'],
                   ['G', 'G', 'G']]
@@ -67,8 +72,9 @@ class TestLocalization(unittest.TestCase):
             [[0.03333333333, 0.03333333333, 0.03333333333],
              [0.13333333333, 0.13333333333, 0.53333333333],
              [0.03333333333, 0.03333333333, 0.03333333333]])
+        self.assertMatricesAlmostEqual(p, correct_answer)
 
-        # test 5
+    def test_five(self):
         colors = [['G', 'G', 'G'],
                   ['G', 'R', 'R'],
                   ['G', 'G', 'G']]
@@ -82,8 +88,9 @@ class TestLocalization(unittest.TestCase):
             [[0.0, 0.0, 0.0],
              [0.0, 0.0, 1.0],
              [0.0, 0.0, 0.0]])
+        self.assertMatricesAlmostEqual(p, correct_answer)
 
-        # test 6
+    def test_six(self):
         colors = [['G', 'G', 'G'],
                   ['G', 'R', 'R'],
                   ['G', 'G', 'G']]
@@ -97,8 +104,9 @@ class TestLocalization(unittest.TestCase):
             [[0.0289855072, 0.0289855072, 0.0289855072],
              [0.0724637681, 0.2898550724, 0.4637681159],
              [0.0289855072, 0.0289855072, 0.0289855072]])
+        self.assertMatricesAlmostEqual(p, correct_answer)
 
-        # test 7
+    def test_seven(self):
         colors = [['G', 'G', 'G'],
                   ['G', 'R', 'R'],
                   ['G', 'G', 'G']]
@@ -112,6 +120,7 @@ class TestLocalization(unittest.TestCase):
             [[0.0, 0.0, 0.0],
              [0.0, 0.33333333, 0.66666666],
              [0.0, 0.0, 0.0]])
+        self.assertMatricesAlmostEqual(p, correct_answer)
 
 
 if __name__ == '__main__':
