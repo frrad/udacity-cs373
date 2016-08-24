@@ -1,129 +1,34 @@
-Quiz:
-    Localization Program
-For the purpose of this homework assume that the robot can move only left, right, up, or down. It cannot move diagonally. Also, for this assignment, the robot will never overshoot its destination square
-it will either make the movement or it will remain stationary.
-
-Warning:
-If you define any helper functions make sure they do not rely on globally defined variables and take all their state as parameters.
-
-Reminder:
-Reference 1D sense and move functions developed during the lesson:
+def move(state, motion, p_move):
+    x, y = motion[0], motion[1]
+    x_length, y_length = len(state), len(state[0])
+    for i in xrange(x_length):
+        for j in xrange(y_length):
+            state[i][j] = ((1 - p_move) * state[i][j] +
+                           state[(i + x) % x_length][(j + y) & y_length] * p_move)
 
 
-def sense(p, Z):
-q = []
-for i in range(len(p)):
-hit = (Z == world[i])
-q.append(p[i] * (hit * pHit + (1 - hit) * pMiss))
-s = sum(q)
-for i in range(len(q)):
-q[i] = q[i] / s
-return q
+def measure(state, measurement, colors, sensor_right):
+    for i in xrange(len(state)):
+        for j in xrange(len(state[0])):
+            if colors[i][j] == measurement:
+                state[i][j] *= sensor_right
+            else:
+                state[i][j] *= (1 - sensor_right)
+    normalize(state)
 
 
-def move(p, U):
-q = []
-for i in range(len(p)):
-s = pExact * p[(i - U) % len(p)]
-s = s + pOvershoot * p[(i - U - 1) % len(p)]
-s = s + pUndershoot * p[(i - U + 1) % len(p)]
-q.append(s)
-return q
-Additional Test Cases
-# test 1
-colors = [['G', 'G', 'G'],
-          ['G', 'R', 'G'],
-          ['G', 'G', 'G']]
-measurements = ['R']
-motions = [[0, 0]]
-sensor_right = 1.0
-p_move = 1.0
-p = localize(colors, measurements, motions, sensor_right, p_move)
-correct_answer = (
-    [[0.0, 0.0, 0.0],
-     [0.0, 1.0, 0.0],
-     [0.0, 0.0, 0.0]])
+def normalize(matrix):
+    normalizer = 1. / sum([sum(row) for row in matrix])
+    for i in xrange(len(matrix)):
+        for j in xrange(len(matrix[0])):
+            matrix[i][j] *= normalizer
 
-# test 2
-colors = [['G', 'G', 'G'],
-          ['G', 'R', 'R'],
-          ['G', 'G', 'G']]
-measurements = ['R']
-motions = [[0, 0]]
-sensor_right = 1.0
-p_move = 1.0
-p = localize(colors, measurements, motions, sensor_right, p_move)
-correct_answer = (
-    [[0.0, 0.0, 0.0],
-     [0.0, 0.5, 0.5],
-     [0.0, 0.0, 0.0]])
 
-# test 3
-colors = [['G', 'G', 'G'],
-          ['G', 'R', 'R'],
-          ['G', 'G', 'G']]
-measurements = ['R']
-motions = [[0, 0]]
-sensor_right = 0.8
-p_move = 1.0
-p = localize(colors, measurements, motions, sensor_right, p_move)
-correct_answer = (
-    [[0.06666666666, 0.06666666666, 0.06666666666],
-     [0.06666666666, 0.26666666666, 0.26666666666],
-     [0.06666666666, 0.06666666666, 0.06666666666]])
-
-# test 4
-colors = [['G', 'G', 'G'],
-          ['G', 'R', 'R'],
-          ['G', 'G', 'G']]
-measurements = ['R', 'R']
-motions = [[0, 0], [0, 1]]
-sensor_right = 0.8
-p_move = 1.0
-p = localize(colors, measurements, motions, sensor_right, p_move)
-correct_answer = (
-    [[0.03333333333, 0.03333333333, 0.03333333333],
-     [0.13333333333, 0.13333333333, 0.53333333333],
-     [0.03333333333, 0.03333333333, 0.03333333333]])
-
-# test 5
-colors = [['G', 'G', 'G'],
-          ['G', 'R', 'R'],
-          ['G', 'G', 'G']]
-measurements = ['R', 'R']
-motions = [[0, 0], [0, 1]]
-sensor_right = 1.0
-p_move = 1.0
-p = localize(colors, measurements, motions, sensor_right, p_move)
-correct_answer = (
-    [[0.0, 0.0, 0.0],
-     [0.0, 0.0, 1.0],
-     [0.0, 0.0, 0.0]])
-
-# test 6
-colors = [['G', 'G', 'G'],
-          ['G', 'R', 'R'],
-          ['G', 'G', 'G']]
-measurements = ['R', 'R']
-motions = [[0, 0], [0, 1]]
-sensor_right = 0.8
-p_move = 0.5
-p = localize(colors, measurements, motions, sensor_right, p_move)
-correct_answer = (
-    [[0.0289855072, 0.0289855072, 0.0289855072],
-     [0.0724637681, 0.2898550724, 0.4637681159],
-     [0.0289855072, 0.0289855072, 0.0289855072]])
-
-# test 7
-colors = [['G', 'G', 'G'],
-          ['G', 'R', 'R'],
-          ['G', 'G', 'G']]
-measurements = ['R', 'R']
-motions = [[0, 0], [0, 1]]
-sensor_right = 1.0
-p_move = 0.5
-p = localize(colors, measurements, motions, sensor_right, p_move)
-correct_answer = (
-    [[0.0, 0.0, 0.0],
-     [0.0, 0.33333333, 0.66666666],
-     [0.0, 0.0, 0.0]])
+def localize(colors, measurements, motions, sensor_right, p_move):
+    x, y = len(colors), len(colors[0])
+    initial_probability = 1. / (x * y)
+    state = [[initial_probability] * y for i in xrange(x)]
+    for (measurement, motion) in zip(measurements, motions):
+        move(state, motion, p_move)
+        measure(state, measurement, colors, sensor_right)
+    return state
